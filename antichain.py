@@ -25,14 +25,24 @@ def lessThan(antichain1, antichain2):
     if not foundA: return False
   return True
   
+def makeAntichains5(elements):
+  antichains = []
+  for x in powerset(powerset(elements)):
+    if isAntichain(x):
+      print(len(antichains), x)
+      antichains.append(x)
+      if len(antichains) == 7579: # known from OEIS
+        break
+  return antichains
+  
 def makeAntichains(elements):
   antichains = [x for x in powerset(powerset(elements)) if isAntichain(x)]
   return antichains
   
-def makeRedudancyGraph(elements):
-  antichains = makeAntichains(elements)
+def makeRedundancyGraph(antichains):
   edges = dict([(i, set()) for i in range(len(antichains))])
   for i, x in enumerate(antichains):
+    print(i)
     for j, y in enumerate(antichains):
       if i != j:
         if lessThan(x,y):
@@ -42,6 +52,7 @@ def makeRedudancyGraph(elements):
   for i, x in enumerate(antichains):
     dot.node(str(i), str(x).replace(", ", "").replace(",","")[1:-1])
   for i, x in enumerate(antichains):
+    print(i)
     for j, y in enumerate(antichains):
       if i != j:
         if lessThan(x,y):
@@ -54,4 +65,3 @@ def makeRedudancyGraph(elements):
           if not foundEdges:
             dot.edge(str(j), str(i))
   return dot
-      
